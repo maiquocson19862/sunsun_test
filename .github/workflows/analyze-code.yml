@@ -32,26 +32,29 @@ jobs:
           echo "$OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Debug syntax errors
-        run: echo "Syntax Errors: ${{ env.syntax_errors }}"
-
       - name: Send email if PHP syntax error
-        if: env.syntax_errors != ''
+        if: contains(env.syntax_errors, 'Parse error')
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "PHP Syntax Error Detected!"
+          subject: "🚨 PHP Syntax Error Detected!"
           to: "your_email@example.com"
           from: "GitHub Actions"
           body: |
+            ❌ **Lỗi PHP Syntax phát hiện trong repository!**
+            
             **Chi tiết lỗi:**  
+            ```
             ${{ env.syntax_errors }}
+            ```
+            
+            📌 Vui lòng kiểm tra lại code và sửa lỗi.
 
       - name: Fail workflow if PHP syntax error
-        if: env.syntax_errors != ''
+        if: contains(env.syntax_errors, 'Parse error')
         run: exit 1
 
       - name: Get changed files
@@ -97,8 +100,10 @@ jobs:
             }')
           ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
 
-          echo "ChatGPT Analysis Output:"
-          echo "$ANALYSIS"
+          if [ -z "$ANALYSIS" ]; then
+            echo "No issues found by ChatGPT."
+            exit 0
+          fi
 
           echo "analysis<<EOF" >> $GITHUB_ENV
           echo "$ANALYSIS" >> $GITHUB_ENV
@@ -112,14 +117,19 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "ChatGPT Code Analysis Report"
+          subject: "🤖 ChatGPT Code Analysis Report"
           to: "your_email@example.com"
           from: "GitHub Actions"
           body: |
             🧐 **Kết quả phân tích code với ChatGPT:**
+            
+            ```
             ${{ env.analysis }}
-
-      - name: Send success email if no ChatGPT message
+            ```
+            
+            📌 Kiểm tra lại và tối ưu hóa code nếu cần.
+            
+      - name: Send email with ChatGPT analysis
         if: env.analysis == ''
         uses: dawidd6/action-send-mail@v3
         with:
@@ -127,9 +137,8 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "Commit Success - No ChatGPT Message"
+          subject: "🤖 ChatGPT Code Analysis Report"
           to: "your_email@example.com"
           from: "GitHub Actions"
           body: |
-            🎉 **Commit thành công - ChatGPT không trả về thông tin nào.**
-            🚀 Hãy tiếp tục commit những thay đổi tốt!
+            📌 Success - không có gì tối ưu.

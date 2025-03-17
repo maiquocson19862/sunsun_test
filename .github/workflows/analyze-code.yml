@@ -46,18 +46,11 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "🚨 PHP Syntax Error Detected!"
+          subject: "PHP Syntax Error Detected!"
           to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
-            ❌ **Lỗi PHP Syntax phát hiện trong repository!**
-            
-            **Chi tiết lỗi:**  
-            ```
-            ${{ env.syntax_errors }}
-            ```
-            
-            📌 Vui lòng kiểm tra lại code và sửa lỗi.
+            lỗi rồi
 
       - name: Fail workflow if PHP syntax error
         if: contains(env.syntax_errors, 'Parse error')
@@ -100,8 +93,7 @@ jobs:
             -d '{
               "model": "gpt-4",
               "messages": [
-                {"role": "system", "content": "1+1 bằng mấy"},
-                {"role": "user", "content": "'"${{ env.code }}"'"}
+                {"role": "user", "content": "1+1 bằng mấy"},
               ]
             }')
           ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
@@ -127,13 +119,7 @@ jobs:
           to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
-            🧐 **Kết quả phân tích code với ChatGPT:**
-            
-            ```
-            ${{ env.analysis }}
-            ```
-            
-            📌 Kiểm tra lại và tối ưu hóa code nếu cần.
+            ${{ env.ANALYSIS }}
             
       - name: Send email with ChatGPT analysis
         if: env.analysis == ''

@@ -11,6 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check if analysis is enabled
+        run: |
+          if [ "${{ secrets.ENABLE_ANALYSIS }}" != "true" ]; then
+            echo "Code analysis is disabled. Exiting..."
+            exit 0
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
 

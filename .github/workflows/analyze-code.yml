@@ -21,6 +21,12 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - name: Get commit author email
+        id: commit-info
+        run: |
+          AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
+          echo "AUTHOR_EMAIL=$AUTHOR_EMAIL" >> $GITHUB_ENV
 
       - name: Check PHP syntax
         id: php-syntax-check
@@ -41,7 +47,7 @@ jobs:
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
           subject: "🚨 PHP Syntax Error Detected!"
-          to: "your_email@example.com"
+          to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
             ❌ **Lỗi PHP Syntax phát hiện trong repository!**
@@ -94,7 +100,7 @@ jobs:
             -d '{
               "model": "gpt-4",
               "messages": [
-                {"role": "system", "content": "You are a code analysis expert. The syntax has already been checked. Please focus on logical issues, security vulnerabilities, and performance optimizations in the following code."},
+                {"role": "system", "content": "1+1 bằng mấy"},
                 {"role": "user", "content": "'"${{ env.code }}"'"}
               ]
             }')
@@ -118,7 +124,7 @@ jobs:
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
           subject: "🤖 ChatGPT Code Analysis Report"
-          to: "your_email@example.com"
+          to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
             🧐 **Kết quả phân tích code với ChatGPT:**
@@ -138,7 +144,7 @@ jobs:
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
           subject: "🤖 ChatGPT Code Analysis Report"
-          to: "your_email@example.com"
+          to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
             📌 Success - không có gì tối ưu.

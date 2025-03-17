@@ -3,7 +3,7 @@ name: Analyze Code with ChatGPT
 on:
   push:
     branches:
-      - main  # Hoặc nhánh bạn muốn theo dõi
+      - main
   pull_request:
 
 jobs:
@@ -14,7 +14,6 @@ jobs:
       - name: Check if analysis is enabled
         run: |
           ENABLE_ANALYSIS="${{ secrets.ENABLE_ANALYSIS }}"
-          echo "ENABLE_ANALYSIS=$ENABLE_ANALYSIS"
           if [ "$ENABLE_ANALYSIS" != "true" ]; then
             echo "Code analysis is disabled. Exiting..."
             exit 0
@@ -34,20 +33,28 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - name: Send email if PHP syntax error
-        if: env.syntax_errors != 'No syntax errors detected in'
+        if: contains(env.syntax_errors, 'Parse error')
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "PHP Syntax Errors Detected"
+          subject: "🚨 PHP Syntax Error Detected!"
           to: "your_email@example.com"
           from: "GitHub Actions"
-          body: "${{ env.syntax_errors }}"
+          body: |
+            ❌ **Lỗi PHP Syntax phát hiện trong repository!**
+            
+            **Chi tiết lỗi:**  
+            ```
+            ${{ env.syntax_errors }}
+            ```
+            
+            📌 Vui lòng kiểm tra lại code và sửa lỗi.
 
       - name: Fail workflow if PHP syntax error
-        if: env.syntax_errors != 'No syntax errors detected in'
+        if: contains(env.syntax_errors, 'Parse error')
         run: exit 1
 
       - name: Get changed files
@@ -62,7 +69,6 @@ jobs:
           
           for FILE in $CHANGED_FILES; do
             if [[ "$FILE" =~ \.(php|js|py|java|html|css)$ ]]; then
-              echo "Reading: $FILE"
               CODE+="$(cat "$FILE")\n\n"
             fi
           done
@@ -82,7 +88,6 @@ jobs:
       - name: Analyze code with ChatGPT
         id: chatgpt
         run: |
-          echo "Analyze code with ChatGPT start"
           RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
@@ -105,13 +110,21 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - name: Send email with ChatGPT analysis
+        if: env.analysis != ''
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
-          subject: "ChatGPT Code Analysis"
+          subject: "🤖 ChatGPT Code Analysis Report"
           to: "your_email@example.com"
           from: "GitHub Actions"
-          body: "${{ env.analysis }}"
+          body: |
+            🧐 **Kết quả phân tích code với ChatGPT:**
+            
+            ```
+            ${{ env.analysis }}
+            ```
+            
+            📌 Kiểm tra lại và tối ưu hóa code nếu cần.

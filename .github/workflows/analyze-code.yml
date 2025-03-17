@@ -23,6 +23,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check PHP syntax
+        run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
@@ -32,11 +35,19 @@ jobs:
         run: |
           CHANGED_FILES="${{ steps.changed-files.outputs.all_modified_files }}"
           CODE=""
+          
           for FILE in $CHANGED_FILES; do
             if [[ "$FILE" =~ \.(php|js|py|java|html|css)$ ]]; then
+              echo "Reading: $FILE"
               CODE+="$(cat "$FILE")\n\n"
             fi
           done
+          
+          if [ -z "$CODE" ]; then
+            echo "No relevant files changed. Skipping analysis."
+            exit 0
+          fi
+
           echo "code<<EOF" >> $GITHUB_ENV
           echo "$CODE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -53,9 +64,18 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             -d '{
               "model": "gpt-4",
-              "messages": [{"role": "user", "content": "'"$code"'"}]
+              "messages": [
+                {"role": "system", "content": "You are a code analysis expert. Please check for syntax errors, logical issues, and security vulnerabilities in the following code."},
+                {"role": "user", "content": "'"${{ env.code }}"'"}
+              ]
             }')
           ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+
+          if [ -z "$ANALYSIS" ]; then
+            echo "No issues found by ChatGPT."
+            exit 0
+          fi
+
           echo "analysis<<EOF" >> $GITHUB_ENV
           echo "$ANALYSIS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV

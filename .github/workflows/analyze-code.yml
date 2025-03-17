@@ -24,7 +24,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check PHP syntax
-        run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
+        id: php-syntax-check
+        continue-on-error: true
+        run: |
+          OUTPUT=$(find . -name "*.php" -print0 | xargs -0 -n1 php -l 2>&1 || true)
+          echo "$OUTPUT"
+          echo "syntax_errors<<EOF" >> $GITHUB_ENV
+          echo "$OUTPUT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send email if PHP syntax error
+        if: env.syntax_errors != 'No syntax errors detected in'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "PHP Syntax Errors Detected"
+          to: "your_email@example.com"
+          from: "GitHub Actions"
+          body: "${{ env.syntax_errors }}"
+
+      - name: Fail workflow if PHP syntax error
+        if: env.syntax_errors != 'No syntax errors detected in'
+        run: exit 1
 
       - name: Get changed files
         id: changed-files
@@ -65,7 +89,7 @@ jobs:
             -d '{
               "model": "gpt-4",
               "messages": [
-                {"role": "system", "content": "You are a code analysis expert. Please check for syntax errors, logical issues, and security vulnerabilities in the following code."},
+                {"role": "system", "content": "You are a code analysis expert. The syntax has already been checked. Please focus on logical issues, security vulnerabilities, and performance optimizations in the following code."},
                 {"role": "user", "content": "'"${{ env.code }}"'"}
               ]
             }')
@@ -80,7 +104,7 @@ jobs:
           echo "$ANALYSIS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Send email with analysis
+      - name: Send email with ChatGPT analysis
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

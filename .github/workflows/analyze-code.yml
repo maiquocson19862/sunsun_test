@@ -90,27 +90,30 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Analyze code with ChatGPT
-        id: chatgpt
-        run: |
-          RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/chat/completions" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            -d '{
-              "model": "gpt-4",
-              "messages": [
-                {"role": "user", "content": "1+1 bằng mấy"},
-              ]
-            }')
-          ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+      id: chatgpt
+      run: |
+        RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/chat/completions" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          -d '{
+            "model": "gpt-4",
+            "messages": [
+              {"role": "user", "content": "1+1 bằng mấy"}
+            ]
+          }')
 
-          if [ -z "$ANALYSIS" ]; then
-            echo "No issues found by ChatGPT."
-            exit 0
-          fi
+        echo "API RESPONSE: $RESPONSE"
 
+        ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+
+        if [ -z "$ANALYSIS" ] || [ "$ANALYSIS" == "null" ]; then
+          echo "ChatGPT không trả về kết quả hợp lệ."
+          echo "analysis=commit success - chatgpt not message" >> $GITHUB_ENV
+        else
           echo "analysis<<EOF" >> $GITHUB_ENV
           echo "$ANALYSIS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+        fi
 
       - name: Send email with ChatGPT analysis
         if: env.analysis != ''

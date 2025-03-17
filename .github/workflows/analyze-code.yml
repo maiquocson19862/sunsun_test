@@ -1,0 +1,56 @@
+name: Analyze Code with ChatGPT
+
+on:
+  push:
+    branches:
+      - main  # Hoặc nhánh bạn muốn theo dõi
+  pull_request:
+
+jobs:
+  analyze_code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+
+      - name: Read changed code
+        id: read-code
+        run: |
+          CHANGED_FILES="${{ steps.changed-files.outputs.all_modified_files }}"
+          CODE=""
+          for FILE in $CHANGED_FILES; do
+            if [[ "$FILE" =~ \.(php|js|py|java|html|css)$ ]]; then
+              CODE+="$(cat "$FILE")\n\n"
+            fi
+          done
+          echo "::set-output name=code::$CODE"
+
+      - name: Analyze code with ChatGPT
+        id: chatgpt
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+            -d '{
+              "model": "gpt-4",
+              "messages": [{"role": "user", "content": "'"${{ steps.read-code.outputs.code }}"'"}]
+            }')
+          ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          echo "::set-output name=analysis::$ANALYSIS"
+
+      - name: Send email with analysis
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "ChatGPT Code Analysis"
+          to: "your_email@example.com"
+          from: "GitHub Actions"
+          body: "${{ steps.chatgpt.outputs.analysis }}"

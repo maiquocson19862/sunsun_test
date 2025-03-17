@@ -22,11 +22,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Get commit author email
-        id: commit-info
-        run: |
-          AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
-          echo "AUTHOR_EMAIL=$AUTHOR_EMAIL" >> $GITHUB_ENV
+      - name: Get commit author email via GitHub API
+          run: |
+            COMMIT_SHA=${{ github.sha }}
+            REPO=${{ github.repository }}
+            
+            AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/$REPO/commits/$COMMIT_SHA" | jq -r '.commit.author.email')
+            
+            echo "AUTHOR_EMAIL=$AUTHOR_EMAIL"
+            echo "AUTHOR_EMAIL=$AUTHOR_EMAIL" >> $GITHUB_ENV
 
       - name: Check PHP syntax
         id: php-syntax-check

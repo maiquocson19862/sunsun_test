@@ -1,0 +1,60 @@
+.main-content {
+    font-size: 0.9vw;
+}
+.main-content-left-date {
+    width: 18vw;
+    float: left;
+}
+.datepicker-inline {
+    width: 19vw;
+}
+.main-content-result {
+    width: 100%;
+    float: right;
+}
+.row-title {
+    text-align: center;
+    padding: 1% 0;
+    background-color: #f9f6eb;
+}
+.row-content {
+    .name_holiday {
+        width: 70%;
+    }
+    .value_holiday {
+        width: 30%;
+    }
+    table {
+        width : 100%;
+        margin-top : .2vw;
+    }
+    td {
+        padding : .2vw;
+    }
+    .tr_disable {
+        background: #CCC;
+    }
+}
+.btn-submit {
+    width: 100%;
+    float: left;
+    margin-top: 2%;
+}
+#submitButton {
+    width: 18%;
+    margin: 0 auto;
+}
+#submitButton>a {
+    width: 100%;
+    padding: 4%;
+    background-color: #d7751e;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: white;
+    border-radius: .25rem;
+}
+.even {
+    margin: 0 5%;
+}

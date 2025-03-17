@@ -1,0 +1,1 @@
+(()=>{var e;(e=jQuery).fn.inputFilter=function(e){return this.on("keydown",(function(e){46==e.keyCode||8==e.keyCode||9==e.keyCode||27==e.keyCode||13==e.keyCode||65==e.keyCode&&!0===e.ctrlKey||e.keyCode>=35&&e.keyCode<=39||(e.shiftKey||(e.keyCode<48||e.keyCode>57)&&(e.keyCode<96||e.keyCode>105))&&e.preventDefault()}))},e(".numberphone").inputFilter((function(e){return!0}))})();

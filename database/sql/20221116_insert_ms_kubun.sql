@@ -1,0 +1,1 @@
+INSERT INTO `ms_kubun` (`ms_kubun_id`, `kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES (188, '031', '31', '3000回', 4, '中学生以下', NULL);

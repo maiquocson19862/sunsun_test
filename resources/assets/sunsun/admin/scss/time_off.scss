@@ -1,0 +1,34 @@
+.on-off-switch-thumb-off,
+.on-off-switch-thumb-on{
+    left: 0px !important;
+    top: 0px !important;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px !important;
+}
+.on-off-switch-text-on,
+.on-off-switch-text-off{
+    line-height: 20px !important;
+}
+.track-off-gradient, .track-on-gradient{
+    background: none;
+}
+.on-off-switch-track-white{
+    background-color: inherit !important;
+}
+#submitButton.disabled {
+    pointer-events: none;
+}
+.disable-checkbox{
+    left: 32px !important;
+}
+.button-control {
+    margin-left: 2vw;
+}
+.col-items {
+    width: 20%;
+    float: left;
+    padding: .5vw;
+}
+.container {
+    max-width: 85vw !important;
+}

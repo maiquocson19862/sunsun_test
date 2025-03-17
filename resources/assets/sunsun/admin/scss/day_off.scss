@@ -1,0 +1,74 @@
+.main-content-result{
+    width: 100%;
+    margin: 2% 0;
+}
+.col-items-date{
+    margin: 10px 10px 10px 0;
+    padding: .5%;
+    flex: 1;
+    overflow-y: auto;
+    width: 24%;
+    float: left;
+}
+.btn-submit{
+    width: 100%;
+    float: left;
+    margin-top: 2%;
+}
+#submitButton{
+    width: 18%;
+    margin: 0 auto;
+}
+#submitButton>a{
+    width: 100%;
+    padding: 4%;
+    background-color: #d7751e;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.15vw;
+    text-transform: uppercase;
+    color: white;
+    border-radius: .25rem;
+}
+.datepicker-inline{
+    width: 100%;
+}
+form#formSubmitDayOff .table-condensed>thead>tr:nth-child(2) .next{
+    display: none;
+}
+form#formSubmitDayOff .table-condensed>thead>tr:nth-child(2) .prev{
+    display: none;
+}
+form#formSubmitDayOff .table-condensed>thead>tr:nth-child(2){
+}
+.active-date{
+    background-color: #99999952 !important;
+}
+.control-input__date{
+    width: 6%;
+}
+#input-current__date{
+    width: 71%;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+#input-current__date:focus{
+    border: none;
+    outline: none;
+}
+.control-input__date span{
+    margin-right: 1%;
+}
+.datepicker table tr td.active.active{
+    background: none !important;
+    color: #212529;
+    border-color: none;
+    text-shadow: none;
+}
+.datepicker table tr td.active.active.disabled{
+    color: #999;
+    border-color: none;
+    text-shadow: none;
+}

@@ -1,0 +1,286 @@
+body {
+    font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+}
+#js-loading {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 1051;
+    background-color: rgba(0,0,0,.2);
+}
+#js-loading img {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: calc(50vh - 50px);
+    left: calc(50vw - 50px);
+}
+.bg-color-01 {
+    background-color: #513e29;
+}
+.fz-1_2 {
+    font-size: 0.73rem;
+}
+
+#page-top {
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+}
+.main-body {
+    // margin-bottom: 10px;
+}
+.text-red{
+    color:red;
+}
+
+@media (max-width: 768px) {
+    .main-body {
+        min-height: calc(100vh - 229px)
+    }
+}
+
+header {
+    margin-bottom: 15px;
+
+    .border-dashed {
+        border-style: dashed !important;
+        clear: both;
+    }
+
+    .border-brown {
+        border-color: #523e29 !important;
+    }
+    .pb-3, .py-3 {
+        padding-bottom: 10px !important;
+    }
+    .mt-5, .my-5 {
+        margin-top: 30px !important;
+    }
+    .mt-4, .my-4 {
+        margin-top: 15px !important;
+    }
+    h1 {
+        margin-bottom: 5px;
+    }
+}
+
+@media (min-width: 992px) {
+    header {
+        .pr-lg-5, .px-lg-5 {
+            padding-right: 30px !important;
+        }
+
+        .pb-3, .py-3 {
+            padding-bottom: 10px !important;
+        }
+    }
+}
+
+
+//The container check box, radio //
+.container-checkbox {
+    width: 100% !important;
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    input { //Hide the browser's default checkbox //
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        &:checked ~ .checkmark { //When the checkbox is checked, add a blue background //
+            background-color: #2196F3;
+        }
+        &:checked ~ .checkmark:after {
+            display: block;
+        }
+    }
+    .checkmark { //Create a custom checkbox //
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+        &:after { //Create the checkmark/indicator (hidden when not checked) //
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        &:after { //Style the checkmark/indicator //
+            left: 9px;
+            top: 3px;
+            width: 8px;
+            height: 15px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    }
+    &:hover input ~ .checkmark { //On mouse-over, add a grey background color //
+        opacity: 0.7;
+    }
+}
+
+
+//The container //
+.container-radio {
+
+    display: block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    //padding-left: 30px;
+    //margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    input { //Hide the browser's default radio button //
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        &:checked ~ .checkmark { //When the radio button is checked, add a blue background //
+            background-color: #2196F3;
+        }
+        &:checked ~ .checkmark:after { //Show the indicator (dot/circle) when checked //
+            display: block;
+        }
+    }
+    .checkmark { //Create a custom radio button //
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+        border-radius: 50%;
+        &:after { //Create the indicator (the dot/circle - hidden when not checked) //
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        &:after { //Style the indicator (dot/circle) //
+            top: 9px;
+            left: 9px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+    }
+    &:hover input ~ .checkmark { //On mouse-over, add a grey background color //
+        opacity: 0.7;
+    }
+}
+
+.container-radio {
+    display: block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    //padding-left: 35px;
+    //margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.container-radio input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.container-radio .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+.container-radio:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+.container-radio input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+.container-radio .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.container-radio input:checked ~ .checkmark:after {
+    display: block;
+}
+.container-radio .checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+table {
+    .time-col {
+        > div {
+            height: 100%;
+            width: 100%;
+            label {
+                width: 100%;
+                height: 100%;
+            }
+            .container-radio .checkmark {
+                top: 50%;
+                left: 50%;
+                height: 19px;
+                width: 19px;
+                transform: translate(-50%, -50%);
+                &:after {
+                    top: 6px;
+                    left: 6px;
+                    width: 7px;
+                    height: 7px;
+                }
+            }
+        }
+    }
+}
+.swal2-actions {
+    margin: 1em auto 0 !important;
+    .swal2-styled {
+        padding: .3em 1em !important;
+    }
+}
+.swal2-content {
+    font-size: 1em !important;
+}
+
+.swal2-icon {
+    width: 3em !important;
+    height: 3em !important;
+    margin: 0.25em auto 0.875em !important;
+    .swal2-icon-content {
+        font-size: 1.8em !important;
+    }
+}
+#choice_date_time {
+    .title-table-time {
+        cursor: move;
+    }
+}

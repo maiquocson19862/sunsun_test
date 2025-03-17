@@ -1,0 +1,62 @@
+.setting{
+    display: flex;
+    margin: 5vh 0;
+    .setting-left{
+    	.setting-laber{
+    		margin-bottom: 1vh;
+    	}
+    	.setting-head{
+    		margin-top: 3vh;
+    		font-weight: bold;
+    		line-height: 2vw;
+    		font-size: 2vw;
+    	}
+    	border-right: 1px solid;
+    	padding-right: 3vw;
+    	width: 35%;
+    }
+    .setting-right{
+    	margin-left: 3vw;
+    	margin-top: 4vh;
+    	width: 65%;
+    }
+}
+.top-align{
+	padding-top: 15px !important;
+}
+.btn-up{
+	cursor: pointer;
+}
+.btn-down{
+	cursor: pointer;
+}
+.setting-block{
+	display: flex;
+	margin-top: 10px;
+	.setting-laber{
+		width: 30%;
+	}
+	.setting-content{
+		width: 70%;
+		.setting-validate{
+			color: red;
+		}
+	}
+
+}
+.kubun_value{
+	color: #d7751e !important;
+	cursor: pointer;
+}
+.color-primary {
+	background: #d7751e;
+	color: #fff;
+}
+.color-primary:hover {
+	background: #d7751e;
+	color: #fff;
+}
+.color-secondary {
+	border: 1px solid #d7751e;
+	color: #000;
+}

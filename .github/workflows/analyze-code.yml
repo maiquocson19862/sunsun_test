@@ -14,6 +14,7 @@ jobs:
       - name: Check if analysis is enabled
         run: |
           ENABLE_ANALYSIS="${{ secrets.ENABLE_ANALYSIS }}"
+          echo "ENABLE_ANALYSIS=$ENABLE_ANALYSIS"
           if [ "$ENABLE_ANALYSIS" != "true" ]; then
             echo "Code analysis is disabled. Exiting..."
             exit 0
@@ -46,6 +47,7 @@ jobs:
       - name: Analyze code with ChatGPT
         id: chatgpt
         run: |
+          echo "Analyze code with ChatGPT start"
           RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \

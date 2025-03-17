@@ -13,7 +13,8 @@ jobs:
     steps:
       - name: Check if analysis is enabled
         run: |
-          if [ "${{ secrets.ENABLE_ANALYSIS }}" != "true" ]; then
+          ENABLE_ANALYSIS="${{ secrets.ENABLE_ANALYSIS }}"
+          if [ "$ENABLE_ANALYSIS" != "true" ]; then
             echo "Code analysis is disabled. Exiting..."
             exit 0
           fi
@@ -35,7 +36,12 @@ jobs:
               CODE+="$(cat "$FILE")\n\n"
             fi
           done
-          echo "::set-output name=code::$CODE"
+          echo "code<<EOF" >> $GITHUB_ENV
+          echo "$CODE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Install dependencies (jq)
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Analyze code with ChatGPT
         id: chatgpt
@@ -45,10 +51,12 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             -d '{
               "model": "gpt-4",
-              "messages": [{"role": "user", "content": "'"${{ steps.read-code.outputs.code }}"'"}]
+              "messages": [{"role": "user", "content": "'"$code"'"}]
             }')
           ANALYSIS=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
-          echo "::set-output name=analysis::$ANALYSIS"
+          echo "analysis<<EOF" >> $GITHUB_ENV
+          echo "$ANALYSIS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Send email with analysis
         uses: dawidd6/action-send-mail@v3
@@ -60,4 +68,4 @@ jobs:
           subject: "ChatGPT Code Analysis"
           to: "your_email@example.com"
           from: "GitHub Actions"
-          body: "${{ steps.chatgpt.outputs.analysis }}"
+          body: "${{ env.analysis }}"

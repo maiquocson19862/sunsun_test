@@ -109,4 +109,23 @@
     @parent
     <script  type="text/javascript" src="{{asset('sunsun/front/js/base.js').config('version_files.html.css')}}"></script>
     <script  type="text/javascript" src="{{asset('sunsun/front/js/payment.js').config('version_files.html.js')}}"></script>
+
+    <script>
+        @if (isset($msg_err))
+            Swal.fire({
+                icon: 'warning',
+                text: '{{ $msg_err }}',
+                confirmButtonColor: '#d7751e',
+                confirmButtonText: '閉じる',
+                width: 350,
+                showClass: {
+                    popup: 'animated zoomIn faster'
+                },
+                hideClass: {
+                    popup: 'animated zoomOut faster'
+                },
+                allowOutsideClick: false
+            })
+        @endif
+    </script>
 @endsection

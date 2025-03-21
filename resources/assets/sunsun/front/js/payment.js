@@ -263,9 +263,15 @@ let callBackMakePayment = function() {
                         }
                     })*/
                     // console.log(html.message.bookingID);
-                    $('#bookingID').val(html.message.bookingID);
-                    $('#tranID').val(html.message.tranID);
-                    $('#completeForm').submit();
+                    // check exists html.message.bookingID
+                    if (html.message.redirectUrl) {
+                        window.location.href = html.message.redirectUrl;
+                    } else if(html.message.bookingID){
+                        $('#bookingID').val(html.message.bookingID);
+                        $('#tranID').val(html.message.tranID);
+                        $('#completeForm').submit();
+                    }
+                    
                     // window.location.href = $site_url+"/complete";
                 }else if ((typeof html.status !== 'undefined') && (html.status == 'error')){
                     Swal.fire({

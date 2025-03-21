@@ -528,7 +528,7 @@ class BookingController extends Controller
 		$bill['course_8']['name'] = "美肌コース";
 		$bill['course_8']['quantity'] = 0;
 		$bill['course_8']['price'] = 0;
-		$bill['course_9']['name'] = "免疫力アップコース";
+		$bill['course_9']['name'] = "デトックスコース";
 		$bill['course_9']['quantity'] = 0;
 		$bill['course_9']['price'] = 0;
 		$bill['course_10']['name'] = "お昼からリフレッシュコース";
@@ -1149,7 +1149,7 @@ class BookingController extends Controller
 			//Log::debug("new booking");
 			//Log::debug($result);
 		}
-		if(isset($result['bookingID'])){
+		if(isset($result['bookingID']) || isset($result['redirectUrl'])){
 			$result = [
 				'status' => 'success',
 				'message' => $result
@@ -1830,7 +1830,7 @@ class BookingController extends Controller
 		$Yoyaku->save();
 	}
 	private function call_payment_api($request, &$data, $booking_id, $old_booking_id = null){
-		//Log::debug('TRACE OPEN PAYMENT API');
+		Log::debug("call_payment_api");
 		if((isset($data['payment-method']) === true) && ($data['payment-method'] == 1)){
 			//Log::debug('$old_booking_id');
 			//Log::debug($old_booking_id);
@@ -1877,21 +1877,31 @@ class BookingController extends Controller
 		'Accept-Language' => 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5,zh-CN;q=0.4,zh;q=0.3'
 	);
 	private function create_tran($request, $booking_id, $amount, $token){
+		Log::debug("start create_tran");
+		if(\Auth::check()){
+			$email = \Auth::user()->email;
+			Log::debug($email);
+			if ($email == env("MAIL_TEST_PAYMENT")) {
+				$amount = 1;
+			}
+		}
+
 		$data = array(
 			'ShopID' =>  env("SHOP_ID"),
 			'ShopPass' => env("SHOP_PASS"),
 			'OrderID' => $booking_id,
 			'Amount' => $amount,
-			'JobCd' => 'CAPTURE'
+			'JobCd' => 'CAPTURE',
+			'TdFlag' => 2
 		);
-		//Log::debug('data');
-		//Log::debug($data);
+		Log::debug('data');
+		Log::debug($data);
 		$response = \Requests::post('https://'.env("SHOP_SUB_DOMAIN").'.mul-pay.jp/payment/EntryTran.idPass', $this->headers, $data);
 
 		parse_str($response->body, $params);
 		if(!isset($params['AccessID']) || !isset($params['AccessPass'])){
-			//Log::debug('Create tran body');
-			//Log::debug($response->body);
+			Log::debug('Create tran ErrorException');
+			Log::debug($response->body);
 			throw new \ErrorException('payment_error');
 		}
 		return $this->exec_tran($request, $params['AccessID'], $params['AccessPass'], $booking_id, $token);
@@ -1903,30 +1913,95 @@ class BookingController extends Controller
 			'OrderID' => $booking_id,
 			'Method' => '1',
 			'PayTimes' => '1',
-			'Token' => $token
+			'Token' => $token,
+			'RetUrl' => env('GMO_RETURN_URL')
 		);
 		$response = \Requests::post('https://'.env("SHOP_SUB_DOMAIN").'.mul-pay.jp/payment/ExecTran.idPass', $this->headers, $data);
-		//Log::debug('Exec tran body');
-		//Log::debug($response->body);
 		parse_str($response->body, $params);
-		if(isset($params['ACS']) && ($params['ACS'] == 0)){
-			// Lưu lại access_id và access_pass dùng cho change price
-			//Log::debug('$params');
-			//Log::debug($params);
-			$payment = new Payment();
-			$payment->booking_id =  $booking_id;
-			$payment->access_id = $accessID;
-			$payment->access_pass = $accessPass;
-			$payment->payment_id = $params['TranID'];
-			$payment->save();
-			$request->session()->forget($this->session_price);
-			return [
-				'tranID' => $params['TranID'],
-				'bookingID' => $booking_id
-			];
+		if (isset($params['ACS'])) {
+			if ($params['ACS'] == 0) {
+				return $this->after_payment_success($booking_id, $accessID, $accessPass, $params['TranID'], $request);
+			} elseif ($params['ACS'] == 2 && isset($params['RedirectUrl'])) {
+				// Chuyển hướng người dùng đến trang xác thực 3D Secure 2.0
+				$t = $params['t'] ?? null;
+				$redirectUrl = $params['RedirectUrl'] ?? null;
+				$queryString = parse_url($redirectUrl, PHP_URL_QUERY);
+				parse_str($queryString, $paramsRedicrectUrl);
+				$transId = $paramsRedicrectUrl['transId'] ?? null;
+				$this->after_payment_success($booking_id, $accessID, $accessPass, $transId);
+				$url = $redirectUrl.'&t='.$t;
+				return [
+					'redirectUrl' => $url
+				];
+			} else {
+				Log::debug('Exec tran exception 1');
+				Log::debug($response->body);
+				throw new \ErrorException('payment_error');
+			}
+
 		}else{
+			Log::debug('Exec tran exception 2');
+			Log::debug($response->body);
 			throw new \ErrorException('payment_error');
 		}
+	}
+
+	public function after_payment_success($booking_id, $accessID, $accessPass, $tranID, $request = false) {
+		$payment = new Payment();
+		$payment->booking_id =  $booking_id;
+		$payment->access_id = $accessID;
+		$payment->access_pass = $accessPass;
+		$payment->payment_id = $tranID;
+		$payment->save();
+		if ($request) {
+			$request->session()->forget($this->session_price);
+		}
+		return [
+			'tranID' => $tranID,
+			'bookingID' => $booking_id
+		];
+	}
+
+	public function payment_callback(Request $request) {
+		Log::debug("payment_callback start");
+		$data = $request->all();
+		// Log::debug($data);
+		$accessID = $data['AccessID'] ?? null;
+		$old_payment = Payment::where('access_id', $accessID)->first();
+		$accessPass = $old_payment->access_pass;
+		$booking_id = $old_payment->booking_id;
+		$tranID = $old_payment->payment_id;
+		Log::debug($accessPass);
+		Log::debug($booking_id);
+		Log::debug($tranID);
+		$data = array(
+			'AccessID' => $accessID,
+			'AccessPass' => $accessPass
+		);
+		$response = \Requests::post('https://'.env("SHOP_SUB_DOMAIN").'.mul-pay.jp/payment/SecureTran2.idPass', $this->headers, $data);
+		parse_str($response->body, $params);
+		Log::debug('SecureTran2 return');
+		Log::debug($response->body);
+		if (isset($params['ErrCode'])) {
+			Log::debug('SecureTran2 ERROR');
+			Log::debug($params);
+			$current_booking = Yoyaku::where('booking_id',$booking_id);
+			if($current_booking){
+				$current_booking->update(['del_flg' => '1']);
+				$ref_booking = Yoyaku::where('ref_booking_id',$booking_id);
+				if($ref_booking){
+					$ref_booking->update(['del_flg' => '1']);
+				}
+				$danji = YoyakuDanjikiJikan::where('booking_id',$booking_id);
+				if($danji){
+					$danji->delete();
+				}
+			}
+			Payment::where('access_id', $accessID)->delete();
+			return redirect()->route('.payment')->with(['msg_err' => '支払処理が失敗しました。']);
+		}
+		$return = $this->after_payment_success($booking_id, $accessID, $accessPass, $tranID);
+		return view('sunsun.front.payment_callback',['bookingID' => $booking_id, 'tranID' => $tranID]);
 	}
 	private function change_tran($accessID, $accessPass, $amount, $booking_id){
 		$data = array(
@@ -1943,16 +2018,7 @@ class BookingController extends Controller
 		//Log::debug('$params');
 		//Log::debug($params);
 		if(isset($params['AccessID'])){
-			$payment = new Payment();
-			$payment->booking_id =  $booking_id;
-			$payment->access_id = $accessID;
-			$payment->access_pass = $accessPass;
-			$payment->payment_id = $params['TranID'];
-			$payment->save();
-			return [
-				'tranID' => $params['TranID'],
-				'bookingID' => $booking_id
-			];
+			return $this->after_payment_success($booking_id, $accessID, $accessPass, $params['TranID']);
 		}else{
 			throw new \ErrorException('payment_error');
 		}

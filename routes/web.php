@@ -111,7 +111,7 @@ Route::middleware('begin.auth')->group(function(){
         Route::post('/add_new_booking',['as' => '.add_new_booking', 'uses' => 'BookingController@add_new_booking']);
         Route::post('/validate_before_booking',['as' => '.validate_before_booking', 'uses' => 'BookingController@validate_before_booking']);
         Route::post('/save_booking',['as' => '.add_new_booking', 'uses' => 'BookingController@save_booking']);
-
+        Route::post('/payment/callback',['as' => '.payment_callback', 'uses' => 'BookingController@payment_callback']);
     });
 
     // Auth

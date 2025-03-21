@@ -38,7 +38,7 @@ class MsKubun extends Model
                 when kubun_type = '021' then 3
                 else 1
             end) as type_holiday")
-        ->whereRaw("kubun_type in ('013','014','021','".$kubun_pet."')")
+        ->whereRaw("kubun_type in ('013','014','021','036','".$kubun_pet."')")
         ->distinct()
         ->orderBy("kubun_type")->orderBy("time_holiday")->get();
     }

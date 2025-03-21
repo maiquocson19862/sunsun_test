@@ -52,3 +52,11 @@
 
     </div>
 </div>
+<div class="linex">
+    <p>{!! nl2br(config('const.message.note_pets')) !!}</p>
+    <div class="line1">
+    </div>
+    <div class="line2">
+
+    </div>
+</div>

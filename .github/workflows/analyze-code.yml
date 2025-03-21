@@ -55,7 +55,8 @@ jobs:
           to: "${{ env.AUTHOR_EMAIL }}"
           from: "GitHub Actions"
           body: |
-            lỗi rồi
+            ---Nội dung lỗi---
+            ${{ env.OUTPUT }}
 
       - name: Fail workflow if PHP syntax error
         if: contains(env.syntax_errors, 'Parse error')

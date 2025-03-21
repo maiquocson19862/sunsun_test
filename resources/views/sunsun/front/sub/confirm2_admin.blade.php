@@ -33,7 +33,7 @@
 	</div>
 </div>
 <div class="linex">
-	{!! config('booking.lunch.note_confirm') !!}<p>{!! config('booking.lunch.note_confirm1') !!}</p>
+	{!! config('booking.lunch.note_confirm') !!}
 	<div class="line1">
 	</div>
 	<div class="line2">

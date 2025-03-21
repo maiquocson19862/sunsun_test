@@ -77,11 +77,13 @@
                     @include('sunsun.front.parts.payment_form', ['new' => '1'])
                     @include('sunsun.front.parts.payment_method', ['new' => '1', 'check_using_coupon' => $check_using_coupon])
 
+                    @if ($check_using_coupon)
                     <div class="pl-4 pr-1">
                         <p class="text-left pt-2">回数券をお持ちの方へ</p>
                         <p class="text-left">酵素浴以外のメニューは現地でお支払いください。</p>
                         <p class="text-left">回数券の購入は、クレジットカードをご利用いただけません。</p>
                     </div>
+                    @endif
                 </div>
                 <div class="foot-confirm">
                     <div class="confirm-button">
@@ -106,5 +108,5 @@
     </script>
     @parent
     <script  type="text/javascript" src="{{asset('sunsun/front/js/base.js').config('version_files.html.css')}}"></script>
-    <script  type="text/javascript" src="{{asset('sunsun/front/js/payment.js').config('version_files.html.css')}}"></script>
+    <script  type="text/javascript" src="{{asset('sunsun/front/js/payment.js').config('version_files.html.js')}}"></script>
 @endsection

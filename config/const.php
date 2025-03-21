@@ -7,6 +7,8 @@ return [
         'please_15_minus' => '※<span class="text-red">予約時間の15分前まで</span>にお越しください。',
         'confirm_change_course' => '<span style="padding:2vw 0;">コースを変更すると、<br/>予約済み内容が全て削除されます。</span>',
         'err_not_user' => 'アカウントをお持ちでない方はこちら',
+        'please_10_minus' => '※<span class="text-red">予約時間の10分前</span>にお越しいただき、店舗周りを少しお散歩してからお越しください。',
+        'note_pets' => "■お持ち物いただくもの\n・マナーベルト\n・タオルケットや毛布\n（ペットちゃんの匂いがついているもの）\n・リード",
     ],
     'db' => [
         'ms_setting' => [
@@ -108,7 +110,6 @@ return [
             '021' => 'Time Slide Whitening',
             '022' => 'Breakfast',
             '023' => 'Number lunch book',
-
             '024' => 'Price 酵素浴',
             '025' => 'Price 1 day refresh',
             '026' => 'Price 貸切',
@@ -116,7 +117,12 @@ return [
             '028' => 'Price Pet',
             '029' => 'Price options',
             '030' => 'Price',
+            '031' => 'Price',
+            '032' => 'Payment method',
             '033' => 'Time Slide Pet',
+            '034' => 'Price',
+            '035' => 'Price',
+            '036' => 'Time Slide Couple',
         ],
 
         'kubun_type_value' => [
@@ -133,6 +139,7 @@ return [
             'TIME_PET' => '020',
             'TIME_WHITENING' => '021',
             'TIME_PET_NEW' => '033',
+            'TIME_BOOK_COUPLE' => '036',
         ],
 
         'kubun_id_value' => [
@@ -159,6 +166,7 @@ return [
                 'SKIN' => '08',
                 'UP' => '09',
                 '1_DAY_REFRESH_NOON' => '10',
+                'COUPLE'=> '11',
             ],
             'gender' => [
                 'MALE' => '01',
@@ -610,6 +618,7 @@ return [
         'c01' => '入浴',
         'c02' => '朝リ',
         'c03' => '貸切',
+        'c11' => 'ペア',
         'c04' => '断食初',
         'c06' => '断食リ',
         'c07' => '昼ス',

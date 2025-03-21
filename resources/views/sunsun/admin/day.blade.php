@@ -72,9 +72,9 @@
                             <textarea type="text" class="form-control" placeholder="【メモ】" id="txt_notes">{{ ($notes == null) ? '' : $notes->txt_notes }}</textarea>
                         </div>
                         <div class="node-day">
-                            <div class="text-right">{{ config('const.text_simple.c01') }}：酵素浴　{{ config('const.text_simple.c02') }}：朝からリフレッシュコース　{{ config('const.text_simple.c10') }}：お昼からリフレッシュコース</div>
-                            <div class="text-right">{{ config('const.text_simple.c07') }}：お昼からのスイーツコース　{{ config('const.text_simple.c08') }}：美肌コース　{{ config('const.text_simple.c09') }}：免疫力アップコース　{{ config('const.text_simple.c04_06') }}：断食コース</div>
-                            <div class="text-right">{{ config('const.text_simple.c03') }}：酵素部屋１部屋貸切コース　{{ config('const.text_simple.new_scan') }}：ニュースキャン　{{ config('const.text_simple.whitening') }}：ホワイトニング　{{ config('const.text_simple.core_tuning') }}：コアチューニング</div>
+                            <div class="text-right">{{ config('const.text_simple.c01') }}：酵素浴　{{ config('const.text_simple.c02') }}：朝からリフレッシュコース　{{ config('const.text_simple.c10') }}：お昼からリフレッシュコース　{{ config('const.text_simple.c07') }}：お昼からのスイーツコース</div>
+                            <div class="text-right">{{ config('const.text_simple.c03') }}：【平日限定】酵素風呂1部屋貸切プラン　{{ config('const.text_simple.c11') }}：【全日午後限定】ペア酵素風呂1部屋貸切プラン　{{ config('const.text_simple.c04_06') }}：断食コース</div>
+                            <div class="text-right">{{ config('const.text_simple.c08') }}：美肌コース　{{ config('const.text_simple.c09') }}：免疫力アップコース　{{ config('const.text_simple.new_scan') }}：ニュースキャン　{{ config('const.text_simple.whitening') }}：ホワイトニング　{{ config('const.text_simple.core_tuning') }}：コアチューニング</div>
                         </div>
                     </div>
                     <div class="main-head_right" style="margin-top: 1.35vw;">

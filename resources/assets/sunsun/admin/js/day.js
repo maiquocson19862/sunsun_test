@@ -514,6 +514,9 @@ $(function () {
 								case '03':
 									course_re = '貸切';
 									break;
+								case '11':
+									course_re = 'ペア';
+									break;
 								case '04':
 									course_re = '断食初';
 									break;

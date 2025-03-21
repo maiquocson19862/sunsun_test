@@ -1,0 +1,40 @@
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '01', '3900回', 1, '酵素浴（大人）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '30', '3900回', 2, '酵素浴（大人）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '02', '3000回', 3, '酵素浴（学生）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '03', '2300回', 4, '酵素浴（小学生）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '31', '3000回', 5, '酵素浴（中学生以下）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '05', '10000名', 6, '朝からリフレッシュコース', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '24', '10000名', 7, 'お昼からリフレッシュコース', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '21', '10000名', 8, 'お昼からのスイーツコース', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '22', '8800名', 9, '美肌コース', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '23', '7500名', 10, '免疫力アップコース', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '06', '23400回', 11, '【平日限定】酵素風呂1部屋貸切プラン', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '07', '3500名', 12, '【平日限定】酵素風呂1部屋貸切プラン（追加）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '32', '20000回', 13, '【全日午後限定】ペア酵素風呂1部屋貸切プラン ', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '08', '12800回', 14, '断食コース（1日コース）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '09', '68000回', 15, '断食コース（5日間体質改善コース ）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '16', '5000回', 16, 'ペット酵素浴', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '17', '3000回', 17, 'ペット酵素浴（1匹追加）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '04', '1500名', 18, 'ランチ', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '20', '3900回', 19, 'ニュースキャン', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '28', '3500回', 20, 'ホワイトニング', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '29', '5000回', 21, 'コアチューニング', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '18', '500回', 22, 'ペット預かり（酵素浴1回）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '19', '1000回', 23, 'ペット預かり（リフレッシュプラン）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '14', '7700泊', 24, 'レンタルルーム（シングル、1名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '27', '7700泊', 25, 'レンタルルーム（シングル、1名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '12', '7700泊', 26, 'レンタルルーム（ツイン、1名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '13', '12000泊', 27, 'レンタルルーム（ツイン、2名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '10', '12000泊', 28, 'レンタルルーム（デラックスルーム、1名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '25', '12000泊', 29, 'レンタルルーム（デラックスルーム、1名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '11', '12000泊', 30, 'レンタルルーム（デラックスルーム、2名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '26', '12000泊', 31, 'レンタルルーム（デラックスルーム、2名）', NULL);
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('035', '15', '600名', 32, 'モーニング', NULL);
+
+UPDATE ms_kubun set sort_no = sort_no + 1 where kubun_type = '005' and sort_no >= 8;
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('005', '11', '【全日午後限定】ペア酵素風呂1部屋貸切プラン', 8, '1', NULL);
+
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('036', '01', '15:15', 1, '1515', '1515');
+
+UPDATE ms_kubun set sort_no = sort_no + 1 where kubun_type = '034' and sort_no >= 13;
+INSERT INTO `ms_kubun` (`kubun_type`, `kubun_id`, `kubun_value`, `sort_no`, `notes`, `time_holiday`) VALUES ('034', '32', '20000回', 13, '【全日午後限定】ペア酵素風呂1部屋貸切プラン ', NULL);

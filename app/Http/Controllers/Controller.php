@@ -13,7 +13,6 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function cron_work(Request $request){
-		var_dump('test')
         dd(1);
     }
 }

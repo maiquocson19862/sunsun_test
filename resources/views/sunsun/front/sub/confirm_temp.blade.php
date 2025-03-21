@@ -5,12 +5,16 @@
     @endif
     @if(isset($change_check) === true)
         <p>ご利用： {{ $admin_value_customer[$i - 1]['repeat_user'] }}</p>
-        @if($repeat_user != '02')
+        @if($course->kubun_id == '05')
+            <p>{!! config('const.message.please_10_minus') !!}</p>
+        @elseif($repeat_user != '02')
             <p>{!! config('const.message.please_15_minus') !!}</p>
         @endif
     @else
         <p>ご利用： {{ $repeat_user->kubun_value }}</p>
-        @if($repeat_user->kubun_id != '02')
+        @if($course->kubun_id == '05')
+            <p>{!! config('const.message.please_10_minus') !!}</p>
+        @elseif($repeat_user->kubun_id != '02')
             <p>{!! config('const.message.please_15_minus') !!}</p>
         @endif
     @endif
@@ -55,7 +59,7 @@
         </div>
     @endif
     <span style="display: none">mark_newline</span>
-    @if($course->kubun_id == '01' || $course->kubun_id == '02' || $course->kubun_id == '03' || $course->kubun_id == '07' || $course->kubun_id == '08' || $course->kubun_id == '09' || $course->kubun_id == '10')
+    @if($course->kubun_id == '01' || $course->kubun_id == '02' || $course->kubun_id == '03' || $course->kubun_id == '11' || $course->kubun_id == '07' || $course->kubun_id == '08' || $course->kubun_id == '09' || $course->kubun_id == '10')
     <div class="linex">
         <p>予約日: {{ $data['date-view'] }}</p>
         <div class="line1"></div>
@@ -111,7 +115,7 @@
             ];
         @endphp
         <span style="display: none">mark_newline</span>
-        @if($course == '01' || $course == '02' || $course == '03' || $course == '07' || $course == '08' || $course == '09' || $course == '10' )
+        @if($course == '01' || $course == '02' || $course == '03' || $course == '11' || $course == '07' || $course == '08' || $course == '09' || $course == '10' )
         <div class="linex">
             <p>予約日: <span style="display: none">mark_space</span>{{ substr($data->service_date_start, 0, 4) . "年" . substr($data->service_date_start, 4, 2) . "月" . substr($data->service_date_start, 6, 2) . "日" ."(" . $weekMap[date('w', strtotime($data->service_date_start))] . ")" }}</p>
             <div class="line1"></div>
@@ -127,6 +131,8 @@
         @include('sunsun.front.sub.confirm2_admin')
     @elseif($course == '03')
         @include('sunsun.front.sub.confirm3_admin')
+    @elseif($course == '11')
+        @include('sunsun.front.sub.confirm11_admin')
     @elseif($course == '04' || $course == '06')
         @include('sunsun.front.sub.confirm4_admin')
     @elseif($course == '05')
@@ -147,6 +153,8 @@
         @include('sunsun.front.sub.confirm2')
     @elseif($course->kubun_id == '03')
         @include('sunsun.front.sub.confirm3')
+    @elseif($course->kubun_id == '11')
+        @include('sunsun.front.sub.confirm11')
     @elseif($course->kubun_id == '04' || $course->kubun_id == '06')
         @include('sunsun.front.sub.confirm4')
     @elseif($course->kubun_id == '05')

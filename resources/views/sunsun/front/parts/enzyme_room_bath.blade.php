@@ -3,13 +3,13 @@
 	if(isset($course_data['service_date_start'])){
 		$disable_booking_date = substr($course_data['service_date_start'], 0, 4).'/'.substr($course_data['service_date_start'], 4, 2).'/'.substr($course_data['service_date_start'], 6, 2);
 	}
-	if( (!isset($course_data['course'])) || ($course_data['course'] != '03') ){
+	if( (!isset($course_data['course'])) || (($course_data['course'] != '03') && ($course_data['course'] != '11')) ){
 		$course_data = NULL;
 	}
 	if(isset($pop_data)){
 		$pop_data = json_decode($pop_data, true);
 	}
-	if(!isset($pop_data) || (json_decode($pop_data['course'], true)['kubun_id'] != '03')){
+	if(!isset($pop_data) || ( (json_decode($pop_data['course'], true)['kubun_id'] != '03') && (json_decode($pop_data['course'], true)['kubun_id'] != '11') )){
 		$pop_data = NULL;
 	}
 @endphp

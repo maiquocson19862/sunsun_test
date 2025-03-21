@@ -26,7 +26,13 @@ http://sun-sun33.com/shop
 @if((isset($booking_data->check_has_couse_oneday) === true) && ($booking_data->check_has_couse_oneday === true))
 ■お持ちいただく物
 ・基礎化粧品、メイク用品、ヘアブラシなど
+@if((isset($booking_data->kubun_id) === true) 
+    && $booking_data->kubun_id != '02' 
+    && $booking_data->kubun_id != '10' 
+    && $booking_data->kubun_id != '04' 
+    && $booking_data->kubun_id != '06')
 ・季節に合わせてリラックスできるお洋服（リラックスタイムに使用）
+@endif
 
 @if($booking_data->check_note_mail)
 ■ファスティング（断食）準備食

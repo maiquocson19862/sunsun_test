@@ -87,7 +87,7 @@ class BookingController extends Controller
 	}
 	private function add_fake_booking($request, &$data){
 		$course = json_decode($data['course'], true);
-		if($course['kubun_id'] == '03'){
+		if($course['kubun_id'] == '03' || $course['kubun_id'] == '11'){
 			$data['fake_booking'] = 1;
 			$temp_json = json_decode($data['time'][0]['json'], true);
 			// 2 ô trống đầu tiên
@@ -397,6 +397,10 @@ class BookingController extends Controller
 			for($i = 0; $i < 8; $i++){
 				$return_data['pop_data'] = array_pop($info['info']);
 			}
+		} elseif(json_decode($return_data['pop_data']['course'], true)['kubun_id'] === '11'){
+			for($i = 0; $i < 8; $i++){
+				$return_data['pop_data'] = array_pop($info['info']);
+			}
 		}
 		$return_data['pop_data']['customer']['customer'] = $info;
 		if(count($info['info']) == 0){
@@ -503,9 +507,12 @@ class BookingController extends Controller
 		$bill['course_2']['name'] = "朝からリフレッシュコース";
 		$bill['course_2']['quantity'] = 0;
 		$bill['course_2']['price'] = 0;
-		$bill['course_3']['name'] = "酵素部屋１部屋貸切コース";
+		$bill['course_3']['name'] = "【平日限定】酵素風呂1部屋貸切プラン";
 		$bill['course_3']['quantity'] = 0;
 		$bill['course_3']['price'] = 0;
+		$bill['course_11']['name'] = "【全日午後限定】ペア酵素風呂1部屋貸切プラン ";
+		$bill['course_11']['quantity'] = 0;
+		$bill['course_11']['price'] = 0;
 		$bill['course_4']['name'] = "断食コース（初めて）";
 		$bill['course_4']['quantity'] = 0;
 		$bill['course_4']['price'] = 0;
@@ -600,6 +607,11 @@ class BookingController extends Controller
 						$new_bill[$sort_no_temp->sort_no]['price'] += ($number_customer - 3) * $this->get_price_course($booking, $bill, true);
 						$new_bill[$sort_no_temp->sort_no]['quantity'] += $number_customer - 3;
 					}
+				}else if($booking_course['kubun_id'] == '11'){
+					$quantity = json_decode( $booking['service_guest_num'], true);
+					$sort_no_temp = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','32']])->get()->first();
+					$new_bill[$sort_no_temp->sort_no]['price'] += $this->get_price_course($booking, $bill);
+					$new_bill[$sort_no_temp->sort_no]['quantity']++;
 				}else if($booking_course['kubun_id'] == '04' || $booking_course['kubun_id'] == '06'){ // 2020/06/05
 					//Bang 5 ngay thi tinh rieng
 					$day = count($booking['date']);
@@ -881,7 +893,7 @@ class BookingController extends Controller
 			$whitening = json_decode($booking['whitening'], true);
 			if ($whitening['kubun_id'] !== '01') {
 				$number_customer = 1;
-				if($course['kubun_id'] == '03'){
+				if($course['kubun_id'] == '03' || $course['kubun_id'] == '11'){
 					$quantity = json_decode( $booking['service_guest_num'], true);
 					$number_customer = (int)$quantity['notes'];
 				}
@@ -896,7 +908,7 @@ class BookingController extends Controller
 			$whitening = json_decode($booking['whitening2'], true);
 			if ($whitening['kubun_id'] !== '01') {
 				$number_customer = 1;
-				if($course['kubun_id'] == '03'){
+				if($course['kubun_id'] == '03' || $course['kubun_id'] == '11'){
 					$quantity = json_decode( $booking['service_guest_num'], true);
 					$number_customer = (int)$quantity['notes'];
 				}
@@ -911,7 +923,7 @@ class BookingController extends Controller
 			$whitening = json_decode($booking['core_tuning'], true);
 			if ($whitening['kubun_id'] !== '01') {
 				$number_customer = 1;
-				if($course['kubun_id'] == '03'){
+				if($course['kubun_id'] == '03' || $course['kubun_id'] == '11'){
 					$quantity = json_decode( $booking['service_guest_num'], true);
 					$number_customer = (int)$quantity['notes'];
 				}
@@ -962,6 +974,10 @@ class BookingController extends Controller
 				}else{
 					$course_price_op = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','07']])->get()->first();
 				}
+				$course_price = preg_replace( '/[^0-9]/', '', $course_price_op->kubun_value);
+				break;
+			case '11': // nguyên sàn
+				$course_price_op = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','32']])->get()->first();
 				$course_price = preg_replace( '/[^0-9]/', '', $course_price_op->kubun_value);
 				break;
 			case '04': case '06': // ăn kiêng // 2020/06/05
@@ -1138,7 +1154,7 @@ class BookingController extends Controller
 				'status' => 'success',
 				'message' => $result
 			];
-		} else if(isset($result)){
+		} elseif(isset($result)){
 			//Log::debug('$result');
 			//Log::debug($result);
 			$result_arr = [
@@ -1295,6 +1311,14 @@ class BookingController extends Controller
 		$check_has_note = false;
 		$check_has_couse_oneday = false;
 		$check_note_mail = false;
+		$kubun_id  = null;
+		if (isset($data['customer'])) {
+			if (isset($data['customer']['info'])) {
+				foreach ($data['customer']['info'] as $value) {
+					$kubun_id = json_decode($value['course'] , true)['kubun_id'];
+				}
+			}
+		}
 		if($from_admin === false){
 			$booking_data = new \stdClass();
 			$booking_data->booking_id = $booking_id;
@@ -1308,6 +1332,7 @@ class BookingController extends Controller
 					||(json_decode($value['course'] , true)['kubun_id'] === '07')
 					||(json_decode($value['course'] , true)['kubun_id'] === '10')
 					||(json_decode($value['course'] , true)['kubun_id'] === '03')
+					||(json_decode($value['course'] , true)['kubun_id'] === '11')
 					||(json_decode($value['course'] , true)['kubun_id'] === '04')
 					||(json_decode($value['course'] , true)['kubun_id'] === '06') // 2020/06/05
 				){
@@ -1327,6 +1352,7 @@ class BookingController extends Controller
 			$booking_data->check_has_note = $check_has_note;
 			$booking_data->check_has_couse_oneday = $check_has_couse_oneday;
 			$booking_data->check_note_mail = $check_note_mail;
+			$booking_data->kubun_id = $kubun_id;
 			ConfirmJob::dispatch($email, $booking_data);
 			ReminderJob::dispatch($email, $booking_data)->delay(now()->addMinutes($delay_time));
 			$request->session()->forget($this->session_html);
@@ -1340,6 +1366,7 @@ class BookingController extends Controller
 			$booking_data->check_has_note = $check_has_note;
 			$booking_data->check_has_couse_oneday = $check_has_couse_oneday;
 			$booking_data->check_note_mail = $check_note_mail;
+			$booking_data->kubun_id = $kubun_id;
 			ConfirmJob::dispatch($email, $booking_data);
 			ReminderJob::dispatch($email, $booking_data)->delay(now()->addMinutes($delay_time));
 		}
@@ -1402,6 +1429,10 @@ class BookingController extends Controller
 						$new_bill[$sort_no_temp->sort_no]['price'] += ($number_customer - 3) * $this->get_price_course_admin($yo, true);
 						$new_bill[$sort_no_temp->sort_no]['quantity'] += $number_customer - 3;
 					}
+				}else if($yo->course == '11'){
+					$sort_no_temp = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','32']])->get()->first();
+					$new_bill[$sort_no_temp->sort_no]['price'] += $this->get_price_course_admin($yo);
+					$new_bill[$sort_no_temp->sort_no]['quantity']++;
 				}else if($yo->course == '04' || $yo->course == '06'){ // 2020/06/05
 					$time = YoyakuDanjikiJikan::where('booking_id', $yo->booking_id)->get();
 					$day = count($time);
@@ -1512,6 +1543,10 @@ class BookingController extends Controller
 				}else{
 					$course_price_op = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','07']])->get()->first();
 				}
+				$course_price = preg_replace( '/[^0-9]/', '', $course_price_op->kubun_value);
+				break;
+			case '11':
+				$course_price_op = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','32']])->get()->first();
 				$course_price = preg_replace( '/[^0-9]/', '', $course_price_op->kubun_value);
 				break;
 			case '04': case '06': // ăn kiêng // 2020/06/05
@@ -1694,7 +1729,7 @@ class BookingController extends Controller
 			$price_white = 0;
 			$whitening = $booking->whitening;
 			if ($whitening !== '01') {
-				if($course == '03'){
+				if($course == '03' || $course == '11'){
 					$quantity = MsKubun::where('kubun_type','015')->where('kubun_id', $booking->service_guest_num)->first();
 					$number_customer = (int)$quantity->notes;
 					$course_price_op = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','20']])->get()->first();
@@ -1715,7 +1750,7 @@ class BookingController extends Controller
 			$price_white = 0;
 			$whitening = $booking->whitening2;
 			if ($whitening !== '01') {
-				if($course == '03'){
+				if($course == '03' || $course == '11'){
 					$quantity = MsKubun::where('kubun_type','015')->where('kubun_id', $booking->service_guest_num)->first();
 					$number_customer = (int)$quantity->notes;
 					$sort_no_temp = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','28']])->get()->first();
@@ -1734,7 +1769,7 @@ class BookingController extends Controller
 			$price_white = 0;
 			$core_tuning = $booking->core_tuning;
 			if ($core_tuning !== '01') {
-				if($course == '03'){
+				if($course == '03' || $course == '11'){
 					$quantity = MsKubun::where('kubun_type','015')->where('kubun_id', $booking->service_guest_num)->first();
 					$number_customer = (int)$quantity->notes;
 					$sort_no_temp = MsKubun::where([['kubun_type',$kubun_type_price],['kubun_id','29']])->get()->first();
@@ -2134,10 +2169,21 @@ class BookingController extends Controller
 				AND main.history_id IS NULL
 				AND main.del_flg IS NULL
 			");
+			$course_11_validate = DB::select("
+				SELECT          main.booking_id
+				FROM            tr_yoyaku main
+				WHERE           main.course = '11'
+				AND             main.service_date_start = $date
+				AND             main.service_time_1 = $time
+				AND             main.bed = $bed
+				AND main.history_id IS NULL
+				AND main.del_flg IS NULL
+			");
 		}
 		if(
 			(isset($course_1_2_4_validate) && (count($course_1_2_4_validate) != 0))
 			|| (isset($course_3_validate) && (count($course_3_validate) != 0))
+			|| (isset($course_11_validate) && (count($course_11_validate) != 0))
 		){
 			throw new \ErrorException('booking_error');
 		}
@@ -2167,8 +2213,8 @@ class BookingController extends Controller
 			$this->set_course_1($parent, $parent_date, $customer, $Yoyaku);
 		}elseif($course->kubun_id == '02'){
 			$this->set_course_2($parent, $parent_date, $customer, $Yoyaku);
-		}elseif($course->kubun_id == '03'){
-			$this->set_course_3($parent, $parent_date, $customer, $Yoyaku);
+		}elseif($course->kubun_id == '03' || $course->kubun_id == '11'){
+			$this->set_course_3_11($parent, $parent_date, $customer, $Yoyaku);
 		}elseif($course->kubun_id == '04' || $course->kubun_id == '06'){ // 2020/06/05
 			$this->set_course_4($parent, $parent_date, $customer, $Yoyaku);
 		}elseif($course->kubun_id == '05'){
@@ -2429,8 +2475,8 @@ class BookingController extends Controller
 			// }
 		}
 	}
-	private function set_course_3($parent, $parent_date, $customer, &$Yoyaku){
-		//Log::debug("start set_course_3");
+	private function set_course_3_11($parent, $parent_date, $customer, &$Yoyaku){
+		//Log::debug("start set_course_3_11");
 		//Fake booking
 		$fake_booking_flg = isset($customer['fake_booking'])?$customer['fake_booking']:NULL;
 		//Basic
@@ -2889,7 +2935,7 @@ class BookingController extends Controller
 		$course = json_decode($data['course'], true);
 		$data_get_attr = json_decode($data['data_get_attr'], true);
 		$validate_time = null;
-		if ($course['kubun_id'] == '03') {
+		if ($course['kubun_id'] == '03' || $course['kubun_id'] == '11') {
 			$gender = [];
 			$gender['kubun_id'] = '01';
 		} else {
@@ -2922,7 +2968,8 @@ class BookingController extends Controller
 			foreach ($sections_booking['info'] as $key => $booking_ss) {
 				$course_ss = json_decode($booking_ss['course'], true);
 				if ($course_ss['kubun_id'] !== config('const.db.kubun_id_value.course.PET')) {
-					if ($course_ss['kubun_id'] == config('const.db.kubun_id_value.course.BOTH_ALL_ROOM')) { // fasting plan
+					if ($course_ss['kubun_id'] == config('const.db.kubun_id_value.course.BOTH_ALL_ROOM')
+						|| $course_ss['kubun_id'] == config('const.db.kubun_id_value.course.COUPLE')) { // fasting plan
 						$gender_ss_id = '01';
 					} else {
 						$gender_ss = json_decode($booking_ss['gender'], true);
@@ -3015,7 +3062,7 @@ class BookingController extends Controller
 			// //Log::debug($data["time_whitening"]["min"]);
 		}
 
-        //2023.7.2 ここでレスポンスなし
+		//2023.7.2 ここでレスポンスなし
 		$data_time = $this->get_date_time($gender, $data, $validate_time, $day_book_time, $time_bus, $validate_ss_time, $course, $data_get_attr, $range_time_validate,$data["time_whitening"]);
 
 		$data_time['course'] = $course['kubun_id'];
@@ -3026,8 +3073,11 @@ class BookingController extends Controller
 		$kubun_type_time = config('const.db.kubun_type_value.TIME'); // 013 kubun_type
 
 		$data_time = [];
-		if ($course['kubun_id'] == '03') {
+		if ($course['kubun_id'] == '03' || $course['kubun_id'] == '11') {
 			$time_kubun_type_book_room = config('const.db.kubun_type_value.TIME_BOOK_ROOM'); //014
+			if ($course['kubun_id'] == '11') {
+				$time_kubun_type_book_room = config('const.db.kubun_type_value.TIME_BOOK_COUPLE'); //036
+			}
 			$kubun_type_bed_male = config('const.db.kubun_type_value.bed_male'); // 017
 			$data_time['beds'] = $data['bed_male'];
 			$data_time_room = $this->get_time_room_booking($time_kubun_type_book_room, $kubun_type_bed_male, $validate_time, $day_book_time, $time_bus, $validate_ss_time, [], $range_time_validate, $course, $time_whitening);
@@ -3133,6 +3183,7 @@ class BookingController extends Controller
 		$time_date_booking = $day_book_time;
 		$config_time = config('const.db.kubun_type_value.TIME');
 		$config_room = config('const.db.kubun_type_value.TIME_BOOK_ROOM');
+		$config_couple = config('const.db.kubun_type_value.TIME_BOOK_COUPLE');
 		$config_white = config('const.db.kubun_type_value.TIME_WHITENING');
 		// $config_pet = config('const.db.kubun_type_value.TIME_PET');
 		$config_pet = \Helper::getKubunTypePet($day_book_time);
@@ -3164,6 +3215,12 @@ class BookingController extends Controller
 			 *  time book all room block 2 time continually so if time after time all room can book is not empty
 			 * => can not book this time
 			 */
+			$sql_join_on .= "
+			OR  (
+					(  ytm.service_time_1 < (mk1.notes + '0130')  AND  ytm.service_time_1 >= mk1.notes  AND mk2.kubun_value = ytm.bed_service_1 AND mk2.kubun_type = '017')
+					OR ( ytm.service_time_2  < (mk1.notes + '0130') AND ytm.service_time_2 >= mk1.notes AND mk2.kubun_value = ytm.bed_service_2 AND mk2.kubun_type = '017')
+				) ";
+		} elseif (isset($course['kubun_id']) && $course['kubun_id'] == '11') {
 			$sql_join_on .= "
 			OR  (
 					(  ytm.service_time_1 < (mk1.notes + '0130')  AND  ytm.service_time_1 >= mk1.notes  AND mk2.kubun_value = ytm.bed_service_1 AND mk2.kubun_type = '017')
@@ -3268,6 +3325,11 @@ class BookingController extends Controller
 						$sql_bed = " AND mk2.kubun_id =  '$bed' ";
 					}
 					if (isset($course['kubun_id']) && $course['kubun_id'] == '03') {
+						$time_2 = $this->minus_time_string($time, 90 - 1);
+						$sql_validate_ss_tmp .= "
+						$or ( mk1.notes <= '$time' AND mk1.notes >= '$time_2'  $sql_bed )
+					";
+					} elseif (isset($course['kubun_id']) && $course['kubun_id'] == '11') {
 						$time_2 = $this->minus_time_string($time, 90 - 1);
 						$sql_validate_ss_tmp .= "
 						$or ( mk1.notes <= '$time' AND mk1.notes >= '$time_2'  $sql_bed )
@@ -3380,16 +3442,18 @@ class BookingController extends Controller
 				$sql_where
 				$sql_group
 		";
-        //dd($sql);
+		//dd($sql);
 		//DB::connection()->enableQueryLog();
 		$time_request = DB::select($sql, $data_sql);
-        //dd($time_request);
+		//dd($time_request);
 		//$queries = DB::getQueryLog();
 		//dd($queries);
 
 //        dd($data_sql);
 		if ($time_kubun_type == $config_room)  { // 014
 			$time_request = $this->fix_3_bed_to_1($time_request);
+		} elseif ($time_kubun_type == $config_couple)  { // 014
+			$time_request = $this->fix_3_bed_to_1_couple($time_request);
 		}
 		return $time_request;
 	}
@@ -3406,6 +3470,31 @@ class BookingController extends Controller
 				}else if(($check_1315) && ($time->notes == '1315')){
 					$time_temp['1315'] = $time;
 					$check_1315 = 0;
+				}else if(($check_1515) && ($time->notes == '1515')){
+					$time_temp['1515'] = $time;
+					$check_1515 = 0;
+				}else{
+					if($time->status_time_validate == 0){
+						$time_temp["$time->notes"]->status_time_validate = 0;
+					}
+				}
+			}
+		}
+		return $time_temp;
+	}
+	private function fix_3_bed_to_1_couple(&$time_request){
+		$time_temp = [];
+		$check_1545 = 1;
+		$check_1615 = 1;
+		$check_1515 = 1;
+		foreach($time_request as $time){
+			if(($time->notes == '1545') || ($time->notes == '1615') || ($time->notes == '1515')){
+				if(($check_1545) && ($time->notes == '1545')){
+					$time_temp['1545'] = $time;
+					$check_1545 = 0;
+				}else if(($check_1615) && ($time->notes == '1615')){
+					$time_temp['1615'] = $time;
+					$check_1615 = 0;
 				}else if(($check_1515) && ($time->notes == '1515')){
 					$time_temp['1515'] = $time;
 					$check_1515 = 0;
@@ -3436,7 +3525,7 @@ class BookingController extends Controller
 					END AS bed_service_1
 				, CASE
 					WHEN ty.course = '01' OR ty.course = '04' OR ty.course = '06'   THEN SUBSTRING(tydj.notes, 3 ,1)
-					WHEN  ty.course = '03' THEN SUBSTRING(ty.bed, 1 ,1)
+					WHEN  ty.course = '03' OR ty.course = '11' THEN SUBSTRING(ty.bed, 1 ,1)
 					ELSE SUBSTRING(ty.bed, 3 ,1)
 					END AS bed_service_2
 				, CASE
@@ -3462,7 +3551,7 @@ class BookingController extends Controller
 			LEFT JOIN (select booking_id,service_date,notes,service_time_1,service_time_2 from tr_yoyaku_danjiki_jikan) tydj ON ty.booking_id = tydj.booking_id
 			WHERE (
 					ty.gender = ':gender_booking' -- 01 for male 02 for female
-					OR ( '01' = ':gender_booking' AND    ty.gender IS NULL AND ty.course = '03'  ) -- book all room for bed male
+					OR ( '01' = ':gender_booking' AND  ty.gender IS NULL AND (ty.course = '03' OR ty.course = '11')  ) -- book all room for bed male
 					$sql_where
 				  )
 			AND
@@ -3701,6 +3790,9 @@ class BookingController extends Controller
 		} else if ($course['kubun_id'] == config('const.db.kubun_id_value.course.BOTH_ALL_ROOM')) { // All room
 			$validate_time['BOTH_ALL_ROOM']['max'] = $this->plus_time_string($data['time_room_value'], $time_wait_bath_max);
 			$validate_time['BOTH_ALL_ROOM']['min'] = $this->minus_time_string($data['time_room_value'], $time_wait_bath_min);
+		} else if ($course['kubun_id'] == config('const.db.kubun_id_value.course.COUPLE')) { // All room
+			$validate_time['COUPLE']['max'] = $this->plus_time_string($data['time_room_value'], $time_wait_bath_max);
+			$validate_time['COUPLE']['min'] = $this->minus_time_string($data['time_room_value'], $time_wait_bath_min);
 		}
 		// check time bus
 		$time_bus = $this->get_time_bus_customer($repeat_user, $transport, $bus_arrive_time_slide);
@@ -3904,6 +3996,7 @@ class BookingController extends Controller
 		$data['stay_guest_num'] = $MsKubun->where('kubun_type','012')->sortBy('sort_no');
 		$data['time_slide'] = $MsKubun->where('kubun_type','013')->sortBy('sort_no');
 		$data['time_slide_room'] = $MsKubun->where('kubun_type','014')->sortBy('sort_no');
+		$data['time_slide_couple'] = $MsKubun->where('kubun_type','036')->sortBy('sort_no');
 		$data['lunch_guest_num'] = $MsKubun->where('kubun_type','023')->sortBy('sort_no');
 		$data['service_guest_num'] = $MsKubun->where('kubun_type','015')->sortBy('sort_no');
 		$data['service_pet_num'] = $MsKubun->where('kubun_type','016')->sortBy('sort_no');
@@ -3961,6 +4054,8 @@ class BookingController extends Controller
 			return view('sunsun.front.parts.oneday_bath',$data)->render();
 		} elseif ($json->kubun_id == "03") {
 			return view('sunsun.front.parts.enzyme_room_bath',$data)->render();
+		} elseif ($json->kubun_id == "11") {
+			return view('sunsun.front.parts.couple_course',$data)->render();
 		} elseif ($json->kubun_id == "04" || $json->kubun_id == "06") { // 2020/06/05
 			return view('sunsun.front.parts.fasting_plan',$data)->render();
 		} elseif ($json->kubun_id == "05") {
@@ -3977,6 +4072,9 @@ class BookingController extends Controller
 	}
 	public function complete(Request $request) {
 		$data = $request->all();
+		if ($request->session()->has($this->session_price)) {
+			$request->session()->forget($this->session_price);
+		}
 		// dd($data);
 		if(isset($data['bookingID']) == false){
 			return redirect()->route('home');
@@ -4064,11 +4162,11 @@ class BookingController extends Controller
 					$repeat_user = $this->changeValueUnique($repeat_user);
 					$row[config('const.db.tr_payments_history.REPEAT_USER')] = $repeat_user;
 				}
-				Log::debug($date_value);
+				// Log::debug($date_value);
 				if ($date_value != "") {
 					$date_value = $this->changeValueUnique($date_value);
 					$row[config('const.db.tr_payments_history.DATE_VALUE')] = $date_value;
-					Log::debug("set date view");
+					// Log::debug("set date view");
 				}
 				$data_ss[$i_pr] = $row;
 			}
@@ -4108,6 +4206,7 @@ class BookingController extends Controller
 				||($value->course === '07')
 				||($value->course === '10')
 				||($value->course === '03')
+				||($value->course === '11')
 				||($value->course === '04')
 				||($value->course === '06') // 2020/06/05
 			){

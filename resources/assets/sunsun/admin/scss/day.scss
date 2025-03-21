@@ -466,6 +466,8 @@ body {
     border-right: 1px solid #fff;
 }
 .main-col__pet.pet-col_second_new {
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
     border-bottom: 1px solid #fff;
 }
 .main-col__pet.pet-col_white {
@@ -632,7 +634,7 @@ li.list-group-item.list-head {
     color: #fff !important;
 }
 .text-right{
-    font-size: 0.7vw !important;
+    font-size: 0.6vw !important;
 }
 .button-control{
     margin-left: 2vw;
@@ -666,7 +668,7 @@ button.swal2-close:focus {
     position: absolute;
     left: 31%;
     width: 24%;
-    top: -61%;
+    top: -60%;
     #txt_notes {
         resize: none;
         height: 6.7vw;

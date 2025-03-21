@@ -101,14 +101,8 @@ Route::middleware('begin.auth')->group(function(){
         Route::any('/payment',['as' => '.payment', 'uses' => 'BookingController@payment']);
         Route::post('/complete',['as' => '.complete', 'uses' => 'BookingController@complete']);
         Route::post('/make_payment',['as' => '.make_payment', 'uses' => 'BookingController@make_payment']);
-
-
-
         Route::post('/get_service',['as' => '.get_service', 'uses' => 'BookingController@get_service']);
-
         Route::post('/get_free_room',['as' => '.get_free_room', 'uses' => 'BookingController@get_free_room']);
-
-
         Route::post('/get_time_room',['as' => '.get_time_room', 'uses' => 'BookingController@get_time_room']);
         Route::get('/get_time_room',['as' => '.get_time_room', 'uses' => 'BookingController@get_time_room']);
         Route::post('/book_room',['as' => '.book_room', 'uses' => 'BookingController@get_time_room']);

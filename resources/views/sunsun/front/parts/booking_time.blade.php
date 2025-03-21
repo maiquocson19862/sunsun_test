@@ -11,12 +11,12 @@
         <tbody>
         @foreach($time_room as $key_r => $times)
             <tr>
-                <td @if($course == '03')  class="time-td" @endif>
+                <td @if($course == '03' || $course == '11')  class="time-td" @endif>
                     <div class="time-col">
                         <span>{{collect($times)->first()->kubun_value}}</span>
                     </div>
                 </td>
-                @if($course == '03')
+                @if($course == '03' || $course == '11')
                     @php
                         $time = null;
                     @endphp

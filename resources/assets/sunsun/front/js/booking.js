@@ -2235,7 +2235,7 @@ function checkShowWhite() {
 		if (obj_lunch == null || obj_lunch == undefined) return;
 		_lunch = getValueSelect(obj_lunch);
 	}
-	if (course.kubun_id == "01" || course.kubun_id == "02" || course.kubun_id == "03" || course.kubun_id == "07" || course.kubun_id == "08" || course.kubun_id == "09" || course.kubun_id == "10") {
+	if (course.kubun_id == "01" || course.kubun_id == "02" || course.kubun_id == "03" || course.kubun_id == "11" || course.kubun_id == "07" || course.kubun_id == "08" || course.kubun_id == "09" || course.kubun_id == "10") {
 		if (obj_whitening == null || obj_whitening == undefined) return;
 		if (obj_whitening2 == null || obj_whitening2 == undefined) return;
 		if (obj_core_tuning == null || obj_core_tuning == undefined) return;
@@ -2243,7 +2243,7 @@ function checkShowWhite() {
 		_whitening2 = getValueSelect(obj_whitening2);
 		_core_tuning = getValueSelect(obj_core_tuning);
 	}
-	if (course.kubun_id == "03") {
+	if (course.kubun_id == "03" || course.kubun_id == "11") {
 		if (lunch_guest_num == null || lunch_guest_num == undefined) return;
 		_lunch_guest_num = getValueSelect(lunch_guest_num);
 	}

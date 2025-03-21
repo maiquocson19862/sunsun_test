@@ -1,0 +1,4 @@
+ErrorDocument 503 /mente.html
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !=/mente.html
+RewriteRule ^.*$ - [R=503,L]

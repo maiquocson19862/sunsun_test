@@ -186,7 +186,7 @@ class AdminController extends Controller
 						, NULL as whitening_repeat
 						, NULL as whitening_repeat2 ";
 				break;
-			case '03':
+			case '03': case '11':
 				$select = " SELECT  main.booking_id
 						, main.ref_booking_id
 						, main.repeat_user
@@ -346,6 +346,7 @@ class AdminController extends Controller
 		$sel_plus2 = $this->getSelect_search("02");
 		$sel_plus2_1 = $this->getSelect_search("02_1");
 		$sel_plus3 = $this->getSelect_search("03");
+		$sel_plus11 = $this->getSelect_search("11");
 		$sel_plus4 = $this->getSelect_search("04");
 		$sel_plus4_1 = $this->getSelect_search("04_1");
 		$sel_plus6 = $this->getSelect_search("06"); // 2020/06/05
@@ -361,6 +362,7 @@ class AdminController extends Controller
 		$where_plus2 = $this->getWhere_search("02",$name);
 		$where_plus2_1 = $this->getWhere_search("02_1",$name);
 		$where_plus3 = $this->getWhere_search("03",$name);
+		$where_plus11 = $this->getWhere_search("11",$name);
 		$where_plus4 = $this->getWhere_search("04",$name);
 		$where_plus4_1 = $this->getWhere_search("04_1",$name);
 		$where_plus6 = $this->getWhere_search("06",$name); // 2020/06/05
@@ -399,6 +401,12 @@ class AdminController extends Controller
 				$sel_plus3
 				$form1
 				$where_plus3
+			)
+			UNION
+			(
+				$sel_plus11
+				$form1
+				$where_plus11
 			)
 			UNION
 			(
@@ -659,6 +667,7 @@ class AdminController extends Controller
 		$sel_plus2 = $this->getSelect_search("02","1");
 		$sel_plus2_1 = $this->getSelect_search("02_1","1");
 		$sel_plus3 = $this->getSelect_search("03","1");
+		$sel_plus11 = $this->getSelect_search("11","1");
 		$sel_plus4 = $this->getSelect_search("04","1");
 		$sel_plus4_1 = $this->getSelect_search("04_1","1");
 		$sel_plus6 = $this->getSelect_search("06","1"); // 2020/06/05
@@ -699,6 +708,13 @@ class AdminController extends Controller
 			$sel_plus3
 			$from1
 			WHERE   main.course = '03'
+			$where1
+		)
+		UNION
+		(
+			$sel_plus11
+			$from1
+			WHERE   main.course = '11'
 			$where1
 		)
 		UNION
@@ -806,6 +822,7 @@ class AdminController extends Controller
 				case '01': $course_1_to_4[$i]->course = config('const.text_simple.c01'); break;
 				case '02': $course_1_to_4[$i]->course = config('const.text_simple.c02'); break;
 				case '03': $course_1_to_4[$i]->course = config('const.text_simple.c03'); break;
+				case '11': $course_1_to_4[$i]->course = config('const.text_simple.c11'); break;
 				case '04': $course_1_to_4[$i]->course = config('const.text_simple.c04'); break;
 				case '06': $course_1_to_4[$i]->course = config('const.text_simple.c06'); break;
 				case '07': $course_1_to_4[$i]->course = config('const.text_simple.c07'); break;
@@ -1007,6 +1024,7 @@ class AdminController extends Controller
 				case '01': $course_wt[$i]->course = config('const.text_simple.c01'); break;
 				case '02': $course_wt[$i]->course = config('const.text_simple.c02'); break;
 				case '03': $course_wt[$i]->course = config('const.text_simple.c03'); break;
+				case '11': $course_wt[$i]->course = config('const.text_simple.c11'); break;
 				case '04': $course_wt[$i]->course = config('const.text_simple.c04'); break;
 				case '06': $course_wt[$i]->course = config('const.text_simple.c06'); break;
 				case '07': $course_wt[$i]->course = config('const.text_simple.c07'); break;
@@ -1089,6 +1107,7 @@ class AdminController extends Controller
 					case '01': $history_booking[$i]->course = config('const.text_simple.c01'); break;
 					case '02': $history_booking[$i]->course = config('const.text_simple.c02'); break;
 					case '03': $history_booking[$i]->course = config('const.text_simple.c03'); break;
+					case '11': $history_booking[$i]->course = config('const.text_simple.c11'); break;
 					case '04': $history_booking[$i]->course = config('const.text_simple.c04'); break;
 					case '06': $history_booking[$i]->course = config('const.text_simple.c06'); break;
 					case '07': $history_booking[$i]->course = config('const.text_simple.c07'); break;
@@ -1199,7 +1218,7 @@ class AdminController extends Controller
 		}
 	private function add_fake_course(&$customer_info, $data){
 		$course = json_decode($data['course'], true);
-		if($course['kubun_id'] == '03'){
+		if($course['kubun_id'] == '03' || $course['kubun_id'] == '11'){
 			$data['fake_booking'] = 1;
 			$temp_json = json_decode($data['time'][0]['json'], true);
 			// 2 ô trống đầu tiên
@@ -1589,6 +1608,20 @@ class AdminController extends Controller
 			(
 				SELECT  main.booking_id
 					, main.course
+					, '01' as gender
+					, main.service_date_start as service_date
+					, main.service_time_1 as time
+					, main.bed
+				FROM        tr_yoyaku as main
+				WHERE   main.course = '11'
+				AND main.service_date_start between '$start_day' and '$end_day'
+				AND main.history_id IS NULL
+				AND main.del_flg IS NULL
+			)
+			UNION
+			(
+				SELECT  main.booking_id
+					, main.course
 					, main.gender
 					, main.service_date_start as service_date
 					, main.service_time_1 as time
@@ -1778,6 +1811,20 @@ class AdminController extends Controller
 					, main.bed
 			FROM        tr_yoyaku as main
 			WHERE   main.course = '03'
+			AND main.service_date_start between '$start_day' and '$end_day'
+			AND main.history_id IS NULL
+			AND main.del_flg IS NULL
+		)
+		UNION
+		(
+			SELECT  main.booking_id
+					, main.course
+					, '01' AS gender
+					, main.service_date_start
+					, main.service_time_1 as time
+					, main.bed
+			FROM        tr_yoyaku as main
+			WHERE   main.course = '11'
 			AND main.service_date_start between '$start_day' and '$end_day'
 			AND main.history_id IS NULL
 			AND main.del_flg IS NULL

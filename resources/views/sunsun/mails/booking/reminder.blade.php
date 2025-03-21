@@ -26,7 +26,13 @@ http://sun-sun33.com/shop
 
 ■お持ちいただく物
 ・基礎化粧品、メイク用品、ヘアブラシなど
+@if((isset($booking_data->kubun_id) === true) 
+    && $booking_data->kubun_id != '02' 
+    && $booking_data->kubun_id != '10' 
+    && $booking_data->kubun_id != '04' 
+    && $booking_data->kubun_id != '06')
 ・季節に合わせてリラックスできるお洋服（リラックスタイムに使用）
+@endif
 @elseif((isset($booking_data->check_has_note) === true) && ($booking_data->check_has_note === true))
 ■お持ちいただく物
 基礎化粧品、メイク用品、ヘアブラシなど
